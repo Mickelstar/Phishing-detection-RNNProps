@@ -9,8 +9,10 @@ import joblib
 warnings.filterwarnings('ignore')
 from feature import FeatureExtraction
 
-file = open("pickle/model.pkl","rb")
-gbc = joblib.load(file)
+file = open("pickle/rnn_model.pkl","rb")
+rnn = joblib.load(file)
+print(rnn)
+
 file.close()
 
 
@@ -19,17 +21,18 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+
+
     if request.method == "POST":
 
         url = request.form["url"]
         obj = FeatureExtraction(url)
         x = np.array(obj.getFeaturesList()).reshape(1,30) 
-
-        y_pred =gbc.predict(x)[0]
+        y_pred =rnn.predict(x)[0]
         #1 is safe       
         #-1 is unsafe
-        y_pro_phishing = gbc.predict_proba(x)[0,0]
-        y_pro_non_phishing = gbc.predict_proba(x)[0,1]
+        y_pro_phishing = rnn.predict(x)[0,0]
+        y_pro_non_phishing = rnn.predict(x)[0,0]
         # if(y_pred ==1 ):
         pred = "It is {0:.2f} % safe to go ".format(y_pro_phishing*100)
         return render_template('index.html',xx =round(y_pro_non_phishing,2),url=url )
