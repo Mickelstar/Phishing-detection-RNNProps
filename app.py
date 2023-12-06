@@ -31,8 +31,8 @@ def index():
         y_pred =rnn.predict(x)[0]
         #1 is safe       
         #-1 is unsafe
-        y_pro_phishing = rnn.predict(x)[0,0]
-        y_pro_non_phishing = rnn.predict(x)[0,0]
+        y_pro_phishing = rnn.predict(x)[-1,0]
+        y_pro_non_phishing = rnn.predict(x)[-1,0]
         # if(y_pred ==1 ):
         pred = "It is {0:.2f} % safe to go ".format(y_pro_phishing*100)
         return render_template('index.html',xx =round(y_pro_non_phishing,2),url=url )
